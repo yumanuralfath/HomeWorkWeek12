@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Button, Flex, Heading } from '@chakra-ui/react';
 
 function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
@@ -21,9 +22,9 @@ function Board() {
 
   function renderSquare(i) {
     return (
-      <button className="square" onClick={() => selectSquare(i)}>
+      <Button className="square" onClick={() => selectSquare(i)} size="md" m={1}>
         {squares[i]}
-      </button>
+      </Button>
     );
   }
 
@@ -31,35 +32,37 @@ function Board() {
   const status = calculateStatus(winner, squares, nextValue);
 
   return (
-    <div>
-      <div>{status}</div>
-      <div>
+    <Flex direction="column" alignItems="center">
+      <Heading as="h2" size="lg" mb={4}>
+        {status}
+      </Heading>
+      <Flex>
         {renderSquare(0)}
         {renderSquare(1)}
         {renderSquare(2)}
-      </div>
-      <div>
+      </Flex>
+      <Flex>
         {renderSquare(3)}
         {renderSquare(4)}
         {renderSquare(5)}
-      </div>
-      <div>
+      </Flex>
+      <Flex>
         {renderSquare(6)}
         {renderSquare(7)}
         {renderSquare(8)}
-      </div>
-      <button onClick={restart}>restart</button>
-    </div>
+      </Flex>
+      <Button onClick={restart} mt={4}>
+        Restart
+      </Button>
+    </Flex>
   );
 }
 
 function Game() {
   return (
-    <div>
-      <div>
-        <Board />
-      </div>
-    </div>
+    <Flex justify="center" align="center" height="100vh">
+      <Board />
+    </Flex>
   );
 }
 
