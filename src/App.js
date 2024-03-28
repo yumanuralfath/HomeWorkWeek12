@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Flex, Heading } from '@chakra-ui/react';
+import { Button, Flex, Heading, Center } from '@chakra-ui/react';
 
 function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [nextValue, setNextValue] = useState('X');
+  const [winner, setWinner] = useState(null);
 
   function selectSquare(square) {
     if (calculateWinner(squares) || squares[square]) {
@@ -13,23 +14,28 @@ function Board() {
     newSquares[square] = nextValue;
     setSquares(newSquares);
     setNextValue(calculateNextValue(newSquares));
+
+    const newWinner = calculateWinner(newSquares);
+    if (newWinner) {
+      setWinner(newWinner);
+    }
   }
 
   function restart() {
     setSquares(Array(9).fill(null));
     setNextValue('X');
+    setWinner(null);
   }
 
   function renderSquare(i) {
     return (
-      <Button className="square" onClick={() => selectSquare(i)} size="md" m={1}>
+      <Button className="square" onClick={() => selectSquare(i)} size="md" m={1} colorScheme='teal' variant="outline">
         {squares[i]}
       </Button>
     );
   }
 
-  const winner = calculateWinner(squares);
-  const status = calculateStatus(winner, squares, nextValue);
+  const status = winner ? `Winner: ${winner}` : squares.every(Boolean) ? `Scratch: Cat's game` : `Next player: ${nextValue}`;
 
   return (
     <Flex direction="column" alignItems="center">
@@ -51,7 +57,14 @@ function Board() {
         {renderSquare(7)}
         {renderSquare(8)}
       </Flex>
-      <Button onClick={restart} mt={4}>
+      {winner && (
+        <Center mt={4} bg="green.200" p={2} borderRadius="md">
+          <Heading size="md" color="green.800">
+            Congratulations {winner} !
+          </Heading>
+        </Center>
+      )}
+      <Button onClick={restart} mt={4} colorScheme='teal' variant="outline">
         Restart
       </Button>
     </Flex>
@@ -60,18 +73,10 @@ function Board() {
 
 function Game() {
   return (
-    <Flex justify="center" align="center" height="100vh">
+    <Flex justify="center" align="center" height="100vh" bg="gray.100">
       <Board />
     </Flex>
   );
-}
-
-function calculateStatus(winner, squares, nextValue) {
-  return winner
-    ? `Winner: ${winner}`
-    : squares.every(Boolean)
-      ? `Scratch: Cat's game`
-      : `Next player: ${nextValue}`;
 }
 
 function calculateNextValue(squares) {
